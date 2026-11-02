@@ -22,43 +22,44 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: gradle
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK Licenses
+        run: |
+          yes | sdkmanager --licenses 2>/dev/null || true
 
-      - name: Generate Gradle Wrapper & Build APK
+      - name: Build APK with Gradle
         working-directory: ./android
         run: |
-          gradle wrapper --gradle-version 8.5
           chmod +x gradlew
-          ./gradlew assembleDebug --stacktrace
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
-      - name: Copy & Name APK
+      - name: Copy & Prepare Output APK
         run: |
           mkdir -p output
           cp android/app/build/outputs/apk/debug/app-debug.apk output/expense.apk
-          ls -la output/expense.apk
+          ls -lh output/expense.apk
 
-      - name: Upload APK as Workflow Artifact
+      - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: expense.apk
           path: output/expense.apk
 
-      - name: Create / Update GitHub Release
+      - name: Create or Update GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v1.0.0
           name: "expense.apk (v1.0.0)"
           body: |
-            ### 📱 expense.apk - Android App Package
+            ### 📱 Download expense.apk for Android
             
             Installable APK for your Android phone.
             
             1. Download **`expense.apk`** below.
-            2. Open the downloaded file on your Android phone.
-            3. Tap **Install** (allow *Install unknown apps* if prompted).
-            4. The app will install with the name **expense.app** on your home screen!
+            2. Tap the downloaded file on your phone.
+            3. Tap **Install** (enable *Install unknown apps* for your browser if prompted).
+            4. The app will install with the name **expense.app** on your phone!
           files: output/expense.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
