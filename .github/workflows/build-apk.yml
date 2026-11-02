@@ -35,12 +35,14 @@ jobs:
       - name: Build APK with Gradle
         working-directory: ./android
         run: |
-          gradle assembleDebug --no-daemon --stacktrace
+          sed -i 's/\r$//' gradlew || true
+          chmod +x gradlew || true
+          ./gradlew assembleDebug --no-daemon --stacktrace || gradle assembleDebug --no-daemon --stacktrace
 
       - name: Copy & Prepare Output APK
         run: |
           mkdir -p output
-          find android/app/build/outputs/apk -name "*.apk" -exec cp {} output/expense.apk \;
+          find android/ -name "*.apk" -exec cp {} output/expense.apk \;
           ls -lh output/expense.apk
 
       - name: Upload APK as Workflow Artifact
