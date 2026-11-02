@@ -25,6 +25,8 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.5
 
       - name: Accept Android SDK Licenses
         run: |
@@ -33,14 +35,12 @@ jobs:
       - name: Build APK with Gradle
         working-directory: ./android
         run: |
-          sed -i 's/\r$//' gradlew
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          gradle assembleDebug --no-daemon --stacktrace
 
       - name: Copy & Prepare Output APK
         run: |
           mkdir -p output
-          cp android/app/build/outputs/apk/debug/app-debug.apk output/expense.apk
+          find android/app/build/outputs/apk -name "*.apk" -exec cp {} output/expense.apk \;
           ls -lh output/expense.apk
 
       - name: Upload APK as Workflow Artifact
