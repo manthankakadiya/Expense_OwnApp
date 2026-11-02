@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.expense.app">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -11,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ExpenseApp">
         <activity
-            android:name=".MainActivity"
+            android:name="com.expense.app.MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:windowSoftInputMode="adjustResize">
@@ -22,4 +23,3 @@
         </activity>
     </application>
 </manifest>
-
